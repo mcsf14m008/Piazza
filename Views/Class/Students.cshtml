@@ -1,0 +1,129 @@
+﻿@{
+    ViewBag.Title = "Students";
+    Layout = "~/Views/Shared/_PartialLogin.cshtml";
+}
+@using MyPiazza.Models
+<!--script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></!--script-->
+<div class="container" id="Students">
+    <div class="row">
+        <div class="col-sm-6 col-md-8 col-md-offset-2">
+
+            <h1 class="text-center login-title" style="font-size: 50px; font-family: 'Times New Roman';">Enrolled Students</h1>
+            <table class="table table-stripped" style="margin-top: 50px; border: 2px solid #233a5c;">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Student Email</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (User u in ViewBag.enrolled)
+                    {
+                        <tr>
+                            <td>@u.FirstName @u.LastName </td>
+                            <td>@u.Email</td>
+                            <td>
+                                @using (Ajax.BeginForm("RespondRequest", "Class",
+                         new AjaxOptions
+                         {
+                             HttpMethod = "POST",
+                             UpdateTargetId = "Students",
+                             InsertionMode = InsertionMode.Replace
+                         }))
+                                {
+                                    <input hidden value="@u.Id" name="id" />
+                                    <button class="btn" name="action" value="unroll" type="submit" style="background: none;"> Remove <span class="glyphicon glyphicon-remove" title="Remove"></span></button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-sm-6 col-md-8 col-md-offset-2">
+
+            <h1 class="text-center login-title" style="font-size: 50px; font-family: 'Times New Roman';">Student's Requests</h1>
+            <table class="table table-stripped" style="margin-top: 50px; border: 2px solid #233a5c;">
+                @if (ViewBag.requested.Count > 0)
+                {
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Student Email</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (User u in ViewBag.requested)
+                    {
+                        <tr>
+                            <td>@u.FirstName @u.LastName </td>
+                            <td>@u.Email</td>
+                            @*<td>
+                                @using (Html.BeginForm("RespondRequest", "Class",
+                         new AjaxOptions
+                         {
+                             HttpMethod = "POST",
+                             UpdateTargetId = "Students",
+                             InsertionMode = InsertionMode.Replace
+                         }))
+                                {
+                                    <input hidden value="@u.Id" name="id" />
+                                    <button class="btn" name="action" value="confirm" type="submit" style="background: none">Confirm <span class="glyphicon glyphicon-ok" title="Enroll Student"></span></button>
+                                }
+                            </td>*@
+                            <td>
+                                <form method="post" action="/Class/RespondRequest">
+                                    <input hidden value="@u.Id" name="id" />
+                                    <button class="btn" name="action" value="confirm" type="submit" style="background: none">Confirm <span class="glyphicon glyphicon-ok" title="Enroll Student"></span></button>
+                                </form>
+                            </td>
+                            <td>
+                                <form method="post" action="/Class/RespondRequest">
+                                    <input hidden value="@u.Id" name="id" />
+                                    <button class="btn" name="action" value="reject" type="submit" style="background: none">Reject <span class="glyphicon glyphicon-remove" title="Enroll Student"></span></button>
+                                </form>
+                            </td>
+                            @*<td>
+                                @using (Ajax.BeginForm("RespondRequest", "Class",
+                         new AjaxOptions
+                         {
+                             HttpMethod = "POST",
+                             UpdateTargetId = "Students",
+                             InsertionMode = InsertionMode.Replace
+                         }))
+                                {
+                                    <input hidden value="@u.Id" name="id" />
+                                    <button class="btn" name="action" value="reject" type="submit" style="background: none;">Reject <span class="glyphicon glyphicon-remove" title="Reject"></span></button>
+                                }
+                            </td>*@
+                        </tr>
+                    }
+                </tbody>
+                }
+                else
+                {
+                    <thead><tr ><th style="text-align:center; font-size:30px;">No Requests</th></tr></thead>
+                }
+            </table>
+
+        </div>
+    </div>
+                
+</div>
+@if ((string)Session["currentRole"] == "Instructor")
+{ 
+    @section Students{
+        <a href="/Class/Students">View Student</a>
+    }
+}
+
+

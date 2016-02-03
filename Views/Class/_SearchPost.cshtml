@@ -1,0 +1,46 @@
+﻿
+
+
+
+<!--Searched Posts -->
+@using MyPiazza.Models
+<div id="searchResult" style="display:none;">
+    <ul class="nav ">
+        @foreach (Post p in Session["postList"] as List<Post>)
+        {
+            <li>
+                @using (Ajax.BeginForm("TogglePost", "Class",
+                     new AjaxOptions
+                     {
+                         HttpMethod = "POST",
+                         UpdateTargetId = "post-content",
+                         InsertionMode = InsertionMode.Replace,
+
+                     }, new { @class = "forms" }))
+                {
+                    <div class="postbutton col-md-12">
+                        <label><i>@p.Tag</i></label>
+                        <div class="col-md-offset-1 ">
+                            <button name="TogglePost" class="col-md-12" value="@p.Id" type="submit" style="border:none; background:none; height:50px;"><strong>@p.Summary</strong></button>
+                        </div>
+                        <label><i>@p.Date</i></label>
+                    </div>
+                }
+            </li>
+        }
+    </ul>
+    @if (((List<Post>)Session["postList"]).Count() == 0)
+    { 
+        <div>
+            <br />
+            <br />
+            <h1>No Posts Found</h1>
+        </div>   
+    }
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#searchResult").slideDown("slow");
+    });
+</script>

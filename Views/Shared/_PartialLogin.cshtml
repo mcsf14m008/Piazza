@@ -1,0 +1,184 @@
+﻿@using MyPiazza.Models;
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title>@ViewBag.title</title>
+    <meta charset="utf-8" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-theme.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-responsive.min.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="~/Content/Images/logo.jpg" />
+</head>
+<body style="background-image: url(/Content/Images/image2.png);">
+
+    <nav class="navbar navbar-default" style="color: white; width: 100%;">
+        <!--logo-->
+        <div class="navbar-header">
+            <a href="/Class/" class="navbar-brand" style="background-color: #3e7aab; color: white;">MyPiazza</a>
+        </div>
+        <!--Items -->
+        <div style="background-color: #3e7aab; color: white;">
+            <ul class="nav navbar-nav" style="">
+                <li class="dropdown" style="min-width: 100px;">
+                    @if (Session["currentClass"] == null)
+                    {
+                        <a href="#" class="dropdown-toggle" style="" data-toggle="dropdown" id="dropdown-menu">Classes <span class="caret"></span></a>
+                    }
+                    else
+                    {
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="dropdown-menu">@(((UserClass)Session["currentClass"]).Name) <span class="caret"></span></a>
+                    }
+                    <ul class="dropdown-menu">
+                        @foreach (UserClass cls in Session["classList"] as List<UserClass>)
+                        {
+                            <li><a href="/Class/GetClass/@cls.Id" style="background-color:transparent;">@cls.Name @if (cls.Notifications > 0)
+                                                                                                                  {<span class="badge"> @cls.Notifications </span>} </a></li>
+                        }
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#" id="createClass" @*class="modal-toggle" data-toggle="modal" data-target="#myModal"*@ id="classButton" style="height: auto; width: auto; background: none; border: none;">Create New Class</a>
+                        </li>
+                        <li>
+                            <a href="/Class/JoinClass" style="background-color: transparent;">Join Class</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li><a href="/Class/Resources">Resources</a></li>
+                <li>
+                    @RenderSection("Students", false)
+
+                </li>
+            </ul>
+        </div>
+
+        <ul class="nav navbar-nav navbar-right">
+            @*<li style="padding-right: 20px;"><a href="#" class="modal-toggle" data-toggle="modal" data-target="#myModal2"><span class="glyphicon glyphicon-user"></span>@(((User)Session["user"]).FirstName) @(((User)Session["user"]).LastName) </a></li>*@
+            <li style="padding-right: 20px;"><a href="/Account"><span class="glyphicon glyphicon-user"></span>@(((User)Session["user"]).FirstName) @(((User)Session["user"]).LastName) </a></li>
+            <li style="padding-right: 20px;"><a href="/Account/Logout"><span class="glyphicon glyphicon-log-out"></span>Logout </a></li>
+        </ul>
+
+    </nav>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="form">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Create New Class</h4>
+                </div>
+                <div class="modal-body form" role="form">
+                    <form method="post" action="/Class/AddClass" role="form">
+                        <div class="form-group">
+                            <label for="Name">Class Name</label>
+                            <input type="text" class="form-control" style="border: 3px solid #808080;" name="name" placeholder="Class Name" required autofocus>
+                        </div>
+                        <div class="form-group">
+                            <label for="Institute">Institute Name</label>
+                            <input type="text" class="form-control" style="border: 3px solid #808080;" name="institute" placeholder="Institute Name" required>
+                        </div>
+                        <input data-submit="form" type="submit" class="btn btn-default" value="Create" />
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    @*<div class="modal fade" id="myModal2" role="form">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Account</h4>
+                </div>
+                <div class="modal-body form" role="form">
+                    <form method="post" action="/Account" id="accountForm" role="form">
+                        <label id="message"></label>
+                        <div class="form-group">
+                            <label for="Password">Password</label>
+                            <input id="password" type="password" class="form-control" style="border: 3px solid #808080;" name="name" placeholder="Password" required autofocus>
+                        </div>
+                        <input data-submit="form" type="submit" id="button" class="btn btn-default" value="Goto Account" />
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/jquery-1.7.1.min.js"></script>
+    <script src="~/scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery-1.7.1.intellisense.js"></script>*@
+    @*<script>
+        $(document).ready(function () {
+            $("#password").focusout(function () {
+                var e = $("#password").val();
+                if ($("#password").val().length == 0) {
+                    $("#message").replaceWith("<label id='message' style='color:red;'>Enter your Password</label>");
+                    $("#password").css({ "border-color": "red", "border-width": "5px" });
+                }
+            });
+            var pass;
+            $("#button").click(function (event) {
+                event.preventDefault();
+                $.getJSON("/Account/ValidatePassword", { password: $("#password").val() }, function (flag) {
+                    if (flag == false) {
+                        //event.preventDefault();
+                        $("#message").replaceWith("<label id='message' style='color:red;'>Incorrect Password</label>");
+                        $("#password").css({ "border-color": "red", "border-width": "5px" });
+                    }
+                    else {
+                        $("#accountForm").submit();
+                    }
+                });
+            });
+        });
+</script>*@
+
+    <div>
+        @RenderBody()
+    </div>
+
+
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#createClass").click(function () {
+                $("#myModal").modal("show");
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#dropdown-menu").click(function () {
+                $(".dropdown-menu").slideToggle(200);
+            });
+            $(".dropdown-menu").focusout(function () {
+                $(".dropdown-menu").slideUp(200);
+            });
+            $("#classButton").focus(function () {
+                $("#createClass").slideToggle(200);
+            });
+        });
+    </script>
+    <style>
+        a {
+            text-decoration-color: white;
+        }
+    </style>
+</body>
+
+</html>

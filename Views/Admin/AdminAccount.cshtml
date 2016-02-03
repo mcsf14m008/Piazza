@@ -1,0 +1,50 @@
+﻿@model MyPiazza.Models.User
+
+@{
+    ViewBag.Title = "AdminAccount";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<style>
+    td,th {
+        border:2px solid #233a5c;
+    }
+</style>
+
+<div id="account">
+    <div class="row">
+
+        <div class="col-sm-6 col-md-8 col-md-offset-1">
+
+            <h1 style="animation: alternate; font-family: 'Times New Roman'; font-size: 50px; text-shadow: 1px 1px 1px #ff6a00; color: snow;">Account Information</h1>
+
+            <table border="1" class="table table-stripped" style="margin-top: 50px;  border:5px solid #233a5c;">
+                <tbody>
+                    <tr>
+                        <th>First Name</th>
+                        <td>@Model.FirstName </td>
+                    </tr>
+                    <tr>
+                        <th >Last Name</th>
+                        <td>@Model.LastName </td>
+                    </tr>
+                    <tr>
+                        <th >Email</th>
+                        <td>@Model.Email </td>
+                    </tr>
+                    <tr>
+                        <th class="head">Password</th>
+                        <td>
+                            @foreach (char c in Model.Password)
+                            {<strong>*</strong>}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><a href="/Account/Manage/@Model.Id">Alter Information</a> </th>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>

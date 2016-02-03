@@ -1,0 +1,94 @@
+﻿@{
+    if ((string)Session["type"] == "admin")
+    {
+        Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_PartialLogin.cshtml";
+    }
+    ViewBag.Title = "Account";
+}
+@using MyPiazza.Models;
+@model MyPiazza.Models.User
+<style>
+    label {
+        color: gold;
+    }
+</style>
+<!-- Account-->
+<div style="background-image: url(/Content/Images/image2.png); height: 700px;">
+    <div class="row">
+        <div class="col-sm-6 col-md-4.5 col-md-offset-3">
+
+            <h1 style="animation: alternate; font-family: 'Times New Roman'; font-size: 50px; text-shadow: 1px 1px 1px #ff6a00; color: gold;">Account</h1>
+            <div class="form">
+
+                <form method="post" action="/Account/Update" role="form" onsubmit="return validatePassword()">
+                    <br />
+                    <div class="form-group">
+                        @Html.LabelFor(m=>m.FirstName,"First Name")
+                        @Html.TextBoxFor(m => Model.FirstName, new { @class= "form-control",placeholder="First Name",required="required"   })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m=>m.LastName,"Last Name")
+                        @Html.TextBoxFor(m => m.LastName, new { @class= "form-control",placeholder="Last Name",required="required"   })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m=>m.Email)
+                        @Html.TextBoxFor(m => m.Email, new { @class= "form-control",@readonly="readonly"   })
+                        
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m=>m.Password)
+                        @Html.PasswordFor(m => m.Password, new { @class= "form-control",placeholder="Password",required="required"   })
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Confirm Password")
+                        @Html.Password("confirmPassword",null, new {@class= "form-control",id="confirmPassword",placeholder="Confirm Password",required="required"   })
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <button id="submitButton" class="btn btn-lg btn-primary btn-block" type="submit">Submit Changes </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/jquery-1.7.1.intellisense.js"></script>
+<script src="~/Scripts/jquery-1.7.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#submitButton").click(function (event) {
+            var p = $("#Password");
+            var cp = $("#confirmPassword");
+
+            if (p.val() != cp.val()) {
+                event.preventDefault();
+                $("#Password").css({ "border-color": "red", "border-width": "5px" });
+                $("#confirmPassword").css({ "border-color": "red", "border-width": "5px" });
+
+            }
+        });
+        $("#confirmPassword,#Password").keyup(function () {
+            if (($("#Password").val().length > 0) && ($("#confirmPassword").val().length > 0)) {
+                var p = $("#Password");
+                var cp = $("#confirmPassword");
+
+                if (p.val() == cp.val()) {
+                    $("#Password").css({ "border-color": "green", "border-width": "3px" });
+                    $("#confirmPassword").css({ "border-color": "green", "border-width": "3px" });
+
+                }
+                else {
+                    $("#Password").css({ "border-color": "red", "border-width": "1px" });
+                    $("#confirmPassword").css({ "border-color": "red", "border-width": "1px" });
+                }
+            }
+        });
+    });
+
+
+</script>

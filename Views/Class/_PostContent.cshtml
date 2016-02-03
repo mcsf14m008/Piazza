@@ -1,0 +1,191 @@
+﻿@model MyPiazza.Models.Post
+@using MyPiazza.Models;
+
+
+<div class="fade in" id="content" style="display: none;">
+    @{
+        string role = Session["currentRole"] as string;
+        User u = Session["user"] as User;
+    }
+    <div>
+        <div style="padding: 10px; border: 2px solid #ffff2f; min-height: 250px; background-color: #f2f2f2;">
+            <h1 style="font-family: 'Times New Roman';">@Model.Summary</h1>
+            <br />
+            <pre>@Model.Details</pre>
+        </div>
+        <div style="text-align: right;">
+            <p>Posted By <strong><i>@Model.UserRole </i></strong><strong>@Model.UserName </strong>At @Model.Date</p>
+        </div>
+    </div>
+    <div>
+        @if (Model.Submission != null && Model.Submission == "Yes" && role == "Student")
+        {
+            <div class="btn btn-lg btn-default" id="submission">Submit Document</div>
+            <div id="message" style=""></div>
+            <div id="uploader1" style="display: none; height: auto;">
+                @using (Html.BeginForm("SubmitDocument", "Class", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {                    
+                    <input type="file" name="file" id="files" multiple="multiple" /><br>
+                    <input type="button" value="Submit" class="btn btn-info" id="upload" />  
+                    <input type="reset" id="cancel" class="btn btn-danger" value="cancel" />    
+                    @ViewBag.Message  
+                }
+            </div>
+        }
+        <script>
+            $body = $("body");
+            $(document).on({
+                ajaxStart: function () { $body.addClass("loading"); },
+                ajaxStop: function () { $body.removeClass("loading"); }
+            });
+
+            $(document).ready(function () {
+                $("#upload").click(function () {
+                    var data = new FormData();
+
+                    //Add the Multiple selected files into the data object
+                    var files = $("#files").get(0).files;
+                    for (i = 0; i < files.length; i++) {
+                        data.append(i, files[i]);
+                    }
+
+                    //Post the data (files) to the server
+                    if (files.length > 0) {
+                        $.ajax({
+                            type: 'POST',
+                            url: "@Url.Action("SubmitDocument", "Class")",
+                            data: data,
+                            contentType: false,
+                            processData: false,
+                            success: function () {
+                                $("#cancel").click();
+                                //alert("Submitted Successfully!");
+                                $("#message").append("<label id='messageLabel' style='color:lightgreen;'>Submitted Succesfully</label>");
+                            },
+                            error: function () {
+                                $("#cancel").click();
+                                $("#message").append("<label id='messageLabel' style='color:red;'>Not Submitted</label>");
+                                //alert("An error occurred!");
+                            },
+                        });
+                    }
+                });
+            });
+        </script>
+        <!--submission folder form-->
+        @if (role == "Instructor" && Model.Submission == "Yes")
+        {
+            <div class="btn btn-lg btn-default" id="viewSubmissions">
+                @using (Ajax.BeginForm("ShowSubmissions", "Class",
+
+                         new AjaxOptions
+                         {
+                             HttpMethod = "POST",
+                             UpdateTargetId = "post-content",
+                             InsertionMode = InsertionMode.Replace
+                         }))
+                {
+                    <button class="btn btn-default" name="TogglePost" value="showSubmissions" type="submit" style="width: 200px; height: 50px;"><span class="glyphicon glyphicon-folder-open" />Show Submissions</button>
+                }
+            </div>
+                
+        }
+    </div>
+    <div>
+        <h4 style="font-style: italic;">Follow Ups</h4>
+        <div id="comment_box" class="col-md-10" style="display: none;">
+
+            @foreach (Comment cmnt in Session["commentList"] as List<Comment>)
+            {
+                <div class="" style="border: 2px solid #808080; background-image: url(/Content/Images/image4.png); width: auto; border-radius: 5px 6px; padding: 10px;">
+                    <div class="col-md-12">
+                        <div class="col-md-7" style="">
+                            <pre>@cmnt.Data</pre>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <p>By <strong><i>@cmnt.UserRole </i></strong><strong>@cmnt.UserName </strong>At @cmnt.Date</p>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="col-md-10">
+            <!--commenting-->
+            @using (Ajax.BeginForm("UpdateComments", "Class",
+           new AjaxOptions
+           {
+               HttpMethod = "POST",
+               UpdateTargetId = "comment_box",
+               InsertionMode = InsertionMode.Replace
+           }, new { id = "commentForm2", @class = "hidden" }))
+            {
+                <input value="@(((Post)Session["currentPost"]).Id)" hidden id="currentPostId" />
+                <button id="commentButton2" class="btn btn-lg btn-success" type="submit">Refreash</button>
+            }
+            @using (Ajax.BeginForm("PostComment", "Class",
+           new AjaxOptions
+           {
+               HttpMethod = "POST",
+               UpdateTargetId = "comment_box",
+               InsertionMode = InsertionMode.Replace
+           }, new { id = "commentForm" }))
+            {
+                <h2>Comment Here:</h2>
+                <textarea placeholder="Comment Here" name="data" rows="4" id="comment" style="padding: 10px; font-family: sans-serif; font-size: 1.2em; width: 600px; padding: 10px; border: 3px solid #808080; border-radius: 3px 20px; font-size: 15px;" required></textarea>
+                <br />
+                <button id="commentButton" class="btn btn-warning btn-md" type="submit">Comment</button>
+            }
+
+
+        </div>
+    </div>
+</div>
+@*<script src="~/Scripts/jquery-1.9.1.min.js"></script>*@
+<script src="~/Scripts/jquery.signalR-2.2.0.min.js"></script>
+<script src="~/signalr/hubs"></script>
+<script>
+    $(function () {
+        var myHub = $.connection.proxyHub;
+
+        // Client side method to call by the server
+        myHub.client.update = function (e) {
+            //alert('Client method called!');
+            var id = $("#currentPostId").val();
+            if (e == id) {
+                $("#commentButton2").click();
+                //alert('Client method called!');
+            }
+        }
+
+        $.connection.hub.start().done(function () {
+            var id = $("#currentPostId").val();
+            $('#commentForm').submit(function () {
+                // Calling server side method
+                //myHub.server.broadcast($("#currentPostID").val());
+                myHub.server.broadcast(id);
+            });
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#submission").click(function () {
+            $("#messageLabel").remove();
+            $("#uploader1").slideToggle("slow");
+        });
+        $("#cancel").click(function () {
+
+            $("#uploader1").slideUp("slow");
+        });
+        $("#content").fadeIn(1000);
+        $("#comment_box").slideDown(1000);
+
+    });
+</script>
+<style>
+    pre {
+        border: none;
+        background: none;
+    }
+</style>
+<script src="~/Scripts/bootstrap.min.js"></script>

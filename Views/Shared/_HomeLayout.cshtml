@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>@ViewBag.title</title>
+    <meta charset="utf-8" />
+
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="~/Content/bootstrap-theme.min.css" />
+    <link rel="icon" type="image/png" href="~/Content/Images/logo.jpg" />
+    <style>
+        label {
+            color: gold;
+        }
+    </style>
+</head>
+<body style="background-image: url(/Content/Images/image1.png); width: auto; height: auto;">
+
+    <nav class="navbar navbar-default">
+        <!--logo-->
+        <div class="navbar-header">
+            <a href="/Home" class="navbar-brand">MyPiazza</a>
+        </div>
+        <!--Items -->
+        <div>
+            <ul class="nav navbar-nav ">
+                    <li  >
+                        <a href="/Home" class="link" id="home"><span class="glyphicon glyphicon-home"></span> Home </a>
+                    </li>
+                    
+                    <li >
+                        <a href="/Account/SignUp"  id="signUp"><span class="glyphicon glyphicon-user"></span> Sign Up </a>
+                    </li>
+                    
+                    <li >
+                        <a href="/Account/Login" class="link" id="login" ><span class="glyphicon glyphicon-log-in"></span> Login </a>
+                    </li>
+
+            </ul>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li style="padding-right: 20px;"><a href="/Home/ContactUs"><span class="glyphicon glyphicon-envelope"></span> Contact Us </a></li>
+            <li style="padding-right: 20px;"><a href="#"><span></span>About Us</a></li>
+        </ul>
+    </nav>
+    <div>
+        @RenderBody()
+    </div>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+
+</body>
+</html>

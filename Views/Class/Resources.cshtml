@@ -1,0 +1,144 @@
+﻿@{
+    Layout = "~/Views/Shared/_PartialLogin.cshtml";
+    ViewBag.Title = "Resources";
+}
+@using MyPiazza.Models;
+<!-- Resources-->
+<div>
+    <div class="row">
+
+        <div class="col-sm-6 col-md-8 col-md-offset-1">
+            <h1 style="font-family: Cambria; font-size: 60px; color: gold;">Resources</h1>
+            @if ((string)Session["currentRole"] == "Instructor")
+            {
+                <button class="btn btn-success" id="resource" style="color: #fede01">Share Resource</button>
+                <div id="message">
+                </div>
+                <div class="form" role="form" id="resourceForm" style="display: none; width: 350px;">
+                    @using (Html.BeginForm("AddResource", "Class", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        <div class="form-group">
+                            <label style="color: #4131d2; font-size: 25px;">Title of Resource</label><br />
+                            <input type="text" class="form-control" name="title" style="font-size: 20px;" id="title" required />
+                            <input type="file" class="form-control" name="file" id="files" multiple="multiple" required /><br>
+                        </div>
+                        <div class="form-group">
+                            <label for="tag">Post Tag </label>
+
+                            <input class="form-control" list="tags" id="tag" />
+                            <datalist id="tags">
+                                @foreach (string tag in Session["tagList"] as List<string>)
+                                {
+                                    <option value="@tag"></option>
+                                }
+                            </datalist>
+                            @*@foreach (string tag in Session["tagList"] as List<string>)
+                            {
+                                <div class="form-inline">
+                                    <input type="radio" style="width:20px;" class="tag" id="tag1" name="tag" value="@tag" required/><label style="color: #4131d2; font-size: 15px;"> @tag </label>
+                                    <br />
+                                </div>
+                            }
+                            <div class="form-inline">
+                                <input type="radio" style="width: 20px;" name="tag" id="other" class="" value="" required /><label style="color: #4131d2; font-size: 15px;"> Add New Tag </label>
+                            </div>*@
+                        </div>
+                        <input type="button" class="btn btn-info" value="Share" id="share-button" />  
+                        <input type="reset" id="cancel" class="btn btn-danger" value="Cancel" />    
+                    }
+                </div>
+                
+                <script src="~/Scripts/bootstrap.min.js"></script>
+                <script src="~/Scripts/jquery-1.7.1.intellisense.js"></script>
+                <script src="~/Scripts/jquery-1.7.1.min.js"></script>
+                <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+                <script>
+                    var flag = true;
+                    $(document).ready(function () {
+                       
+                        $("#resource").click(function () {
+                            $("#messageLabel").remove();
+                            $("#resourceForm").slideToggle("slow");
+                        });
+                        $("#cancel").click(function () {
+                            $("#resourceForm").slideUp("slow");
+                        });
+                    });
+                    $body = $("body");
+                    $(document).on({
+                        ajaxStart: function () { $body.addClass("loading"); },
+                        ajaxStop: function () { $body.removeClass("loading"); }
+                    });
+
+                    $(document).ready(function () {
+                        $("#share-button").click(function () {
+                            var data = new FormData();
+
+                            //Add the Multiple selected files into the data object
+                            var files = $("#files").get(0).files;
+                            for (i = 0; i < files.length; i++) {
+                                data.append(i, files[i]);
+                            }
+                            $("#resourceForm").slideUp("slow");
+                            var titl = $("#title").val();
+                            var taag = $("#tag").val();
+                            data.append("title", titl);
+                            data.append("tag", taag);
+
+                            //Post the data (files) to the server
+                            if (files.length > 0) {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: "@Url.Action("AddResource", "Class")",
+                                    data: data,
+                                    contentType: false,
+                                    processData: false,
+                                    success: function (data1) {
+                                        $("#cancel").click();
+                                        //alert("Submitted Successfully!");
+                                        $("#message").append("<label id='messageLabel' style='color:lightgreen;'>Shared Succesfully</label>");
+                                    },
+                                    error: function () {
+                                        $("#cancel").click();
+                                        $("#message").append("<label id='messageLabel' style='color:red;'>Not Shared</label>");
+                                        //alert("An error occurred!");
+                                    },
+                                });
+                            }
+                        });
+                    });
+                </script>
+            }
+
+            @foreach (string tag in Session["tagList"] as List<string>)
+            {
+                <h2 class="taghead">@tag</h2>
+                <table class="table table-stripped" style="background-color: #b0b0ff; margin-top: 50px;">
+                    <thead>
+                        <tr style="font: bold; font-size: 20px;">
+                            <th>Title </th>
+                            <th>Name </th>
+                            <th>Issue Date</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Resource res in (((List<Resource>)Session["resourceList"]).Where(a => a.Tag == tag)))
+                        {
+                            <tr>
+                                <td>@res.Title</td>
+                                <td>@res.Name</td>
+                                <td>@res.Date</td>
+                                <td>@Html.ActionLink("Click To Download", "DownloadResource", new { fileName = @res.Path })</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                   
+            }
+
+        </div>
+    </div>
+
+</div>
+

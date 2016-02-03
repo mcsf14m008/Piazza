@@ -1,0 +1,41 @@
+﻿
+@{
+    ViewBag.Title = "JoinClass";
+    Layout = "~/Views/Shared/_PartialLogin.cshtml";
+    
+}
+@model List<MyPiazza.Models.UserClass>
+@using MyPiazza.Models
+
+<div class="container" >
+    <div class="row">
+        <div class="col-sm-6 col-md-8 col-md-offset-2">
+            
+            <h1 class="text-center login-title" style="font-size:50px; font-family:'Times New Roman';">All Unjoined Classes</h1>
+            <table class="table table-stripped" style="margin-top:50px; border:2px solid #233a5c; ">
+                     <thead>
+                       <tr>
+                         <th>Class Name</th>
+                         <th>Instructor Name</th>
+                         <th>Institute</th>
+                           <th> </th>
+                       </tr>
+                     </thead>
+                 
+                 <tbody>
+                     @foreach (UserClass cls in Model)
+                     {
+                         <tr>
+                             <td> @cls.Name</td>
+                             <td> @cls.InstructorName</td>
+                             <td> @cls.Institute </td>
+                             <td> <a href="/Class/JoinRequest/@cls.Id">Request to Join</a> </td>
+                         </tr>
+                     }
+                 </tbody>
+             </table>
+            
+        </div>
+    </div>
+</div>
+

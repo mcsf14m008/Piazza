@@ -1,0 +1,59 @@
+﻿@{
+    ViewBag.Title = "Messages";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@using MyPiazza.Models
+@model List<MyPiazza.Models.Message>
+ 
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6 col-md-12">
+            
+            <h1 class="text-center login-title" style="font-size:50px; font-family:'Times New Roman';">Mail Box</h1>
+            <button class="btn btn-lg btn-default" onclick="location.href='/Admin/MessagesSeen'" ><span class="glyphicon glyphicon-arrow-left"></span>Back to Home</button>
+            <table class="table table-stripped" style="margin-top:50px; border:2px solid #233a5c; font-size:20px;">
+                <caption><strong>Sender and Message Details</strong></caption>    
+                 <thead style="font:bold;">
+                       <tr>
+                         <th>First Name</th>
+                         <th>Last Name</th>
+                         <th>Email</th>
+                           <th>Message</th>
+                         <th>Date/Time </th>
+                           <th>Status </th>
+                           <th> </th>
+                           <th> </th>
+                       </tr>
+                     </thead>
+                 
+                 <tbody>
+                     @foreach (Message msg in Model)
+                     {
+                         
+                         <tr>
+                             <td> @msg.FirstName</td>
+                             <td> @msg.LastName</td>
+                             <td> @msg.Email </td>
+                             <td><pre> @msg.Message1 </pre></td>
+                             <td> @msg.Date </td>
+                             @if(@msg.Status=="unseen")
+                             {
+                                 <td style="color:blue;"> New </td>
+                             }
+                             else
+                             {
+                                 <td style="color:green;"> Seen <span class="glyphicon glyphicon-ok"></span> </td>
+                             }
+                             <td> <a href="/Admin/DeleteMessage/@msg.Id"><span style="font-size:30px; color:red;" class="glyphicon glyphicon-trash"></span> </a></td>
+                             <td> <a href="#">Reply</a> </td>
+
+                         </tr>
+                     }
+                 </tbody>
+             </table>
+            
+        </div>
+    </div>
+</div>
+
+

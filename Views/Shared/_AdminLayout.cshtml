@@ -1,0 +1,69 @@
+﻿@using MyPiazza.Models;
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title>@ViewBag.title</title>
+    <meta charset="utf-8" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-theme.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-responsive.min.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="~/Content/Images/logo.jpg" />
+</head>
+<body style="background-image: url(/Content/Images/image2.png); width:auto; height:auto;">
+
+    <nav class="navbar navbar-default" >
+        <!--logo-->
+        <div class="navbar-header" >
+            <a href="/Admin" class="navbar-brand" style="background-color:#3e7aab;color: white;">MyPiazza</a>
+        </div>
+        <!--Items -->
+        <div >
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="dropdown-menu">ALL Data <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/Admin/Classes" style="background-color:transparent;"> All Classes </a></li>
+                        <li><a href="/Admin/Users" style="background-color:transparent;"> All Users </a></li>
+                        <li><a href="/Admin/Submissions" style="background-color:transparent;"> All Submissions </a></li>
+                        <li><a href="/Admin/MailBox" style="background-color:transparent;"> Mail Box @if(Session["messages"]!=null&&(int)Session["messages"]>0){<span class="badge">@Session["messages"]</span>}</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <ul class="nav navbar-nav navbar-right">
+            <li style="padding-right: 20px;"><a href="/Admin/Account"><span class="glyphicon glyphicon-user"> </span> &nbsp @(((User)Session["user"]).FirstName) @(((User)Session["user"]).LastName) </a></li>
+            <li style="padding-right: 20px;"><a href="/Account/Logout"><span class="glyphicon glyphicon-log-out"></span>&nbsp Logout </a></li>
+        </ul>
+
+    </nav>
+    <div>
+        @RenderBody()
+    </div>
+
+
+    <script src="~/Scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            $(".dropdown-toggle").click(function () {
+                $(".dropdown-menu").slideToggle(200);
+            });
+            ($(".dropdown-toggle") && $(".dropdown-menu")).focusout(function () {
+                $(".dropdown-menu").slideUp(200);
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#button1").click(function () {
+                $("#addForm").slideToggle("slow");
+            });
+        });
+</script>
+</body>
+
+</html>

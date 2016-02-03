@@ -1,0 +1,161 @@
+﻿<!--Class Index-->
+@{
+    Layout = "~/Views/Shared/_PartialLogin.cshtml";
+    ViewBag.Title = "MyClass";
+    string role = "";
+    Post currentPost = (Post)Session["currentPost"];
+}
+
+@using MyPiazza.Models;
+
+
+
+<div class="container-fluid" >
+    <div class="row" id="posts">
+        <div class="col-md-3" style="border-width: 2px; border-color: blue; overflow: auto; height: 580px; border: solid; border-color: #808080;">
+            <div >
+                <ul class="nav nav-pills nav-stacked" style="border-width: 2px;">
+                    <li style="height: auto;">
+                        <!--Form for changing post content area with new post form ()-->
+                        @if (Session["currentClass"] != null)
+                        {
+                            role = (string)Session["currentRole"];
+                            using (Ajax.BeginForm("TogglePost", "Class",
+                             new AjaxOptions
+                             {
+                                 HttpMethod = "POST",
+                                 UpdateTargetId = "post-content",
+                                 InsertionMode = InsertionMode.Replace
+                             }))
+                            {
+                            <button class="btn btn-lg postbutton" name="TogglePost" value="newPost" type="submit" style="width: 300px; height: 50px; background-color: #9595ff;"><span class="glyphicon glyphicon-file"></span>New Post</button>
+                            }
+
+                            using (Ajax.BeginForm("SearchPost", "Class",
+                             new AjaxOptions
+                             {
+                                 HttpMethod = "POST",
+                                 UpdateTargetId = "allPost",
+                                 InsertionMode = InsertionMode.Replace
+                             }, new { id = "searchForm" }))
+                            {
+                            <table>
+                                <caption style="font-size: 20px;">Search</caption>
+                                <tr>
+                                    <td>
+                                        <input id="searchBar" type="text" name="searchContent" style="height: 40px; width: 250px; padding: 10px; font-size: 15px;" required /></td>
+                                    <td>
+                                        <button class="btn" id="searchButton" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            
+                            <!--button class="btn btn-lg postbutton" name="TogglePost" value="newPost" type="submit"><span class="glyphicon glyphicon-search"></span></!--button-->
+                            }
+
+                        }
+
+                    </li>
+                </ul>
+            </div>
+            <!--form for all posts-->
+            <div style="background: none;">
+                @using (Ajax.BeginForm("SearchPost", "Class",
+                             new AjaxOptions
+                             {
+                                 HttpMethod = "POST",
+                                 UpdateTargetId = "allPost",
+                                 InsertionMode = InsertionMode.Replace
+                             }))
+                {
+                    <button class="btn postbutton" name="searchContent" value="all" type="submit" style="height: 50px; font-size: 25px; background-color: #9595ff;"><span class="glyphicon glyphicon-list"></span>All Posts</button>
+                }
+            </div>
+            <div id="allPost">
+                <ul class="nav ">
+                    @if (Session["postList"] != null && ((List<Post>)Session["postList"]).Count > 0)
+                    {
+                        foreach (Post p in Session["postList"] as List<Post>)
+                        {
+                        <li>
+                            @using (Ajax.BeginForm("TogglePost", "Class",
+                     new AjaxOptions
+                     {
+                         HttpMethod = "POST",
+                         UpdateTargetId = "post-content",
+                         InsertionMode = InsertionMode.Replace,
+
+                     }, new { @class = "forms" }))
+                            {
+                                <div class="postbutton col-md-10">
+                                    <label><i>@p.Tag</i></label>
+                                    <div class="col-md-offset-1 ">
+                                        <input  name="postid" value="@p.Id" hidden />
+                                        <button name="TogglePost" id="post_@p.Id" class="col-md-12" value="@p.Id" type="submit" style="border:none; background:none; height:50px;"><strong>@p.Summary</strong></button>
+                                    </div>
+                                    <label><i>@p.Date</i></label>
+                                </div>
+                            }
+                        </li>
+                        }
+                        if (Session["currentPost"] != null)
+                        {
+                        <script>
+                            window.onload = function () { $("#post_@currentPost.Id").click(); }
+                        </script>
+                    }
+                    }
+                </ul>
+                @if (((List<Post>)Session["postList"]).Count() == 0)
+                { 
+                    <div>
+                        <br />
+                        <br />
+                        <h1>No Posts Found</h1>
+                    </div>   
+                }
+            </div>
+
+        </div>
+
+        <div id="abc" class="col-md-offset-3"  style="border: solid; border-width: 2px; border-color: #808080; padding: 10px 10px 10px 10px;">
+            <div class="fade in col-md-12" id="post-content" style="height:600px; position:relative; padding-bottom:50px; overflow: auto;">
+                <!--Area for post content-->
+                <br />
+                <br />
+                <div class="col-md-offset-4 col-md-8">
+                    <h1>No Posts</h1>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+@if (role == "Instructor")
+{ 
+    @section Students{
+        <a href="/Class/Students">View Student</a>
+    }
+}
+<style>
+    .postbutton {
+        background-color: #ebebeb;
+        height: 100px;
+        padding: 2PX;
+        width: 300px;
+        border: 2px solid #000040;
+    }
+</style>
+<script src="~/Scripts/jquery-1.7.1.intellisense.js"></script>
+<script src="~/Scripts/jquery-1.7.1.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#searchBar").keyup(function () {
+            $("#searchButton").click();
+        });
+    });
+</script>

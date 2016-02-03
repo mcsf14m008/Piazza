@@ -1,0 +1,57 @@
+﻿<!--Strictly typed-->
+@model List<MyPiazza.Models.Comment>
+@using MyPiazza.Models;
+
+@{ 
+    for (int i = 0; i < Model.Count - 1; i++)
+    {
+    <div class="block" style="border: 2px solid #808080; background-image: url(/Content/Images/image4.png);  border-radius: 5px 6px; padding: 10px;">
+        <div class="col-md-12">
+            <div class="col-md-7" style="">
+                <pre>@Model[i].Data</pre>
+            </div>
+        </div>
+        <div style="text-align: right;">
+            <p>By <strong><i>@Model[i].UserRole </i></strong><strong>@Model[i].UserName </strong>At @Model[i].Date</p>
+        </div>
+    </div>
+    }
+    
+}
+<div class="last" style="border: 2px solid #808080; display: none; background-image: url(/Content/Images/image4.png); border-radius: 5px 6px; padding: 10px;">
+    <div class="col-md-12">
+        <div class="col-md-7" style="">
+            <pre>@Model.Last().Data</pre>
+        </div>
+    </div>
+    <div style="text-align: right;">
+        <p>By <strong><i>@Model.Last().UserRole </i></strong><strong>@Model.Last().UserName </strong>At @Model.Last().Date</p>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $(".last").slideDown("slow");
+        $("#comment").val("");
+    });
+</script>
+<script src="~/Scripts/jquery.signalR-2.2.0.min.js"></script>
+<script src="~/signalr/hubs"></script>
+<script>
+    //$(function () {
+    //    var myHub = $.connection.proxyHub;
+
+    //    //var id = $("#currentPostId").val();
+    //    //window.onload = function () { myHub.server.broadcast(id); }
+    //    $.connection.hub.start().done(function () {
+    //        var id = $("#currentPostId").val();
+    //        //window.onload = function () {
+    //            //$('#commentForm').submit(function () {
+    //            // Calling server side method
+    //            //myHub.server.broadcast($("#currentPostID").val());
+    //            //myHub.server.broadcast(id);
+    //        //}
+    //    });
+
+    //});
+</script>

@@ -1,0 +1,80 @@
+﻿@model MyPiazza.Models.Post
+
+@{
+    string role = (string)Session["currentRole"];
+    
+}
+<div class="fade in" style="display: none;" id="newPost">
+    <h1 class="block">Provide Details</h1>
+    <div class="form">
+
+        <form id="postForm" role="form" method="post" action="/Class/SavePost">
+            <br />
+            <div class="form-group">
+                <label for="summary">Summary </label>
+                <input type="text" class="form-control" style="height: 70px; width: 1000px; font-size: 40px; border: 3px solid #808080;" name="summary" placeholder="Summry of the Post" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="details">Details </label>
+                <br />
+                <textarea form="postForm" placeholder="Details" name="details" style="width: 1000px; padding: 10px; border: 3px solid #808080; border-radius: 5px 30px; font-size: 20px;" rows="4" id="details" required></textarea>
+            </div>
+            @if (role != null && role == "Instructor")
+            {
+                <div class="form-group">
+                    <label for="submission">Submission on Post </label>
+                    <br />
+                    <div class="form-inline">
+                        <input type="radio" name="submission" value="Yes" required /><label>Yes</label>
+                        @*<input type="date" min='@DateTime.Now' class="form-control" style="width: 20%" />
+                        <input type="time" class="form-control" style="width: 20%" />*@
+                    </div>
+                    <input type="radio" name="submission" value="No" checked="checked" />No 
+                </div>
+            }
+            <div class="form-group">
+                <label for="tag">Post Tag </label>
+                <br />
+                @foreach (string tag in Session["tagList"] as List<string>)
+                {
+                    <input type="radio" class="tag" name="tag" value="@tag" required/><label>@tag</label><br /> 
+                }
+                <input type="radio" class="tag" name="tag" value="General" /><label>General</label><br />
+                @if (role != null && role == "Instructor")
+                {
+                    <input type="radio" id="other" name="tag" value="" required /><label>Add New Tag</label>
+                }
+            </div>
+            <div class="form-group">
+                <button class="btn btn-lg btn-primary" style="width: 250px;" type="submit">Post </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+<script>
+    var flag = false;
+    $(document).ready(function () {
+        $("#newPost").slideDown(1000);
+        $("#other").focusin(function () {
+            if (flag == false) {
+                $("#other").next().after($("<input type='text' id='otherTag' name='tag' Style='display:none;' required/>"));
+                $("#otherTag").show(500);
+                flag = true;
+            }
+
+        });
+        $("#otherTag").on('change', function () {
+            $("#other").val($("#otherTag").val());
+        });
+
+        $(".tag").focusin(function () {
+            flag = false;
+            $("#otherTag").hide("slow");
+            $("#otherTag").remove("#otherTag");
+        });
+    });
+</script>
+<script src="~/Scripts/jquery-1.9.1.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>

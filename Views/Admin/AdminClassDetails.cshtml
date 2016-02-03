@@ -1,0 +1,53 @@
+﻿@{
+    ViewBag.Title = "Class Details";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@using MyPiazza.Models;
+@{
+    List<Post> postList = Session["postList"] as List<Post>;
+    UserClass cls = Session["currentClass"] as UserClass;
+    }
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6 col-md-10 col-md-offset-1">
+            
+            <h1 class="text-center login-title" style="font-size:50px; font-family:'Times New Roman';">@cls.Name Details</h1>
+            <button class="btn btn-lg btn-default" onclick="location.href='/Admin/Classes'" ><span class="glyphicon glyphicon-arrow-left"></span>Back to All Class</button>
+            <table class="table table-stripped" style="margin-top:50px; border:2px solid #233a5c;">
+                <caption><strong>Class Details</strong></caption>    
+                 <thead>
+                       <tr>
+                         <th>Post Summary</th>
+                         <th>Post Content</th>
+                         <th>Posted By</th>
+                           <th>User Role</th>
+                         <th>Email</th>
+                         <th>Post Date</th>
+                           <th> </th>
+                           <th> </th>
+                       </tr>
+                     </thead>
+                 
+                 <tbody>
+                     @foreach (Post post in postList)
+                     {
+                         
+                         <tr>
+                             <td> @post.Summary</td>
+                             <td> @post.Details</td>
+                             <td> @post.UserName </td>
+                             <td> @post.UserRole </td>
+                             <td> @post.User.Email </td>
+                             <td> @post.Date </td>
+                             <td> <a href="/Admin/PostDetails/@post.Id">Show Comments</a> </td>
+                             <td> <a href="/Admin/DeletePost/@post.Id">Delete Post</a> </td>
+
+                         </tr>
+                     }
+                 </tbody>
+             </table>
+            
+        </div>
+    </div>
+</div>

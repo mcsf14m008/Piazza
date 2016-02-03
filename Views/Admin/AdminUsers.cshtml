@@ -1,0 +1,114 @@
+﻿@{
+    ViewBag.Title = "AdminUsers";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+@using MyPiazza.Models;
+@{
+    List<User> userList = Session["userList"] as List<User>;
+    
+    }
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="table-responsive">
+            <table class="table table-stripped" style="margin-top:50px; border:2px solid #233a5c">
+                <caption><h1><b>User Table</b></h1></caption>     
+                <thead>
+                       <tr>
+                         <th>First Name</th>
+                           <th>Last Name</th>
+                         <th>Email</th>
+                         <th>Password</th>
+                         <th>Type</th>
+                         <th> </th>
+                           <th> </th>
+                       </tr>
+                     </thead>
+                 
+                 <tbody>
+                     @foreach (User u in userList)
+                     {
+                         
+                         <tr>
+                             <td> @u.FirstName</td>
+                             <td> @u.LastName</td>
+                             <td> @u.Email </td>
+                             <td> @u.Password </td>
+                             <td> @u.Type </td>
+                             <td> <a href="/Admin/Edit/@u.Id">Edit</a> </td>
+                             <td> <a href="/Admin/DeleteUser/@u.Id">Delete</a> </td>
+                         </tr>
+                     }
+                 </tbody>
+             </table>
+                
+                <div id="addForm" class="collapse" style="display:none; overflow:auto;">
+                    <form role="form" method="post" action="/Admin/AddUser" ><br />
+                        <div class="form-group">
+                            <label for="fname" >First Name </label>
+                            <input type="text" class="form-control" name="firstName" placeholder="First Name" required autofocus>
+                        </div>
+                        <div class="form-group">
+                            <label for="lname" >Last Name </label>
+                            <input type="text" class="form-control" name="lastName" placeholder="Last Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" >Email </label>
+                            <label id="message"></label>
+                            <input type="email" id="email" class="form-control" name="email" placeholder="Email" required>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="password" >Password </label>
+                            <input type="text" class="form-control" name="password" id="password" placeholder="Password" required>
+                        </div>
+                        <div class="form-group form-inline" >
+                            <input type="radio" class="form-control" name="type" Value="user" required><label> User </label>
+                            <input type="radio" class="form-control" name="type" Value="admin" required><label> Admin </label>
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            <button class="btn btn-lg btn-primary btn-block" type="submit"> Add User </button>
+                        </div>
+                    
+                    </form>
+
+                </div>
+                <button type="button" id="button1"  data-toggle="collapse" data-target="#addForm" class="btn btn-lg btn-block" >Add New User</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/jquery-1.7.1.intellisense.js"></script>
+<script src="~/Scripts/jquery-1.7.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#email").focusout(function () {
+            var e = $("#email").val();
+            if ($("#email").val().length == 0) {
+                $("#message").replaceWith("<label id='message' style='color:red;'>Enter your Email</label>");
+                $("#email").css({ "border-color": "red", "border-width": "5px" });
+            }
+            else if ($("#email").val().indexOf("@@") < 0 || e.substring(e.indexOf("@@"), e.length).length < 3) {
+                $("#message").replaceWith("<label id='message' style='color:red;'>Enter a Valid Email</label>");
+                $("#email").css({ "border-color": "red", "border-width": "5px" });
+            }
+            else {
+                $.getJSON("/Account/EmailAvailability", { email: $("#email").val() }, function (flag) {
+                    if (flag == false) {
+                        $("#message").replaceWith("<label id='message' style='color:green;'>Username Available</label>");
+                        $("#email").css({ "border-color": "green", "border-width": "5px" });
+                    }
+                    else if (flag == true) {
+                        $("#message").replaceWith("<label id='message' style='color:red;'>Username Not Available</label>");
+                        $("#email").css({ "border-color": "red", "border-width": "5px" });
+                    }
+
+                });
+            }
+        });
+    });
+
+
+</script>

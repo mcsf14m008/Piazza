@@ -1,0 +1,153 @@
+﻿@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    ViewBag.Title = "Piazza";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <h1 style="animation: alternate; font-family: 'Times New Roman'; font-size: 50px; text-shadow: 1px 1px 1px #ff6a00; color: snow;">Sign Up</h1>
+            <div class="form">
+
+                <form role="form" @*onsubmit="return validatePassword()"*@ method="post" action="/Account/Register">
+                    <br />
+                    <div class="form-group">
+                        <label for="fname">First Name </label>
+                        <input type="text" class="form-control" name="firstName" placeholder="First Name" required autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="lname">Last Name </label>
+                        <input type="text" class="form-control" name="lastName" placeholder="Last Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email </label>
+                        <label id="message"></label>
+                        <input type="email"id="email" class="form-control" name="email" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password </label>
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password </label>
+                        <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" required>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <button id="submitButton" class="btn btn-lg btn-primary btn-block" type="submit">Sign Up </button>
+                    </div>
+
+                </form>
+            </div>
+
+
+        </div>
+
+        <div class="features_list col-md-7">
+            <div class="" style="color: #14426b;">
+                <h1 class="main_header">The incredibly easy, completely free Q&amp;A platform</h1>
+                <h2 class="sub_header">Save time and help students learn using the power of community</h2>
+            </div>
+
+            <ul class="product_brief_list" style="font-size: 25px; color: #233a5c;">
+                <li>Wiki style format enables collaboration in a single space</li>
+                <li>Features LaTeX editor, highlighted syntax and code blocking</li>
+                <li>Questions and posts needing immediate action are highlighted</li>
+                <li>Instructors endorse answers to keep the class on track</li>
+                <li>Posting encourages every student to participate</li>
+                <li>Course resources and Assignment submissions</li>
+                <li>Highly customizable online polls</li>
+
+            </ul>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/jquery-1.7.1.intellisense.js"></script>
+<script src="~/Scripts/jquery-1.7.1.min.js"></script>
+<script>
+    function validatePassword() {
+        var x = document.getElementById("password");
+        var y = document.getElementById("confirmPassword");
+        if (x.value != y.value) {
+            document.getElementById("password").style.borderColor = "#ff0000";
+            document.getElementById("password").style.borderWidth = "3px";
+            document.getElementById("confirmPassword").style.borderColor = "#ff0000";
+            document.getElementById("confirmPassword").style.borderWidth = "3px";
+            return false;
+        }
+    }
+    
+</script>
+<script>
+    $(document).ready(function () {
+        $("#email").focusout(function () { 
+            var e= $("#email").val();
+            if ($("#email").val().length == 0)
+            {
+                $("#message").replaceWith("<label id='message' style='color:red;'>Enter your Email</label>");
+                $("#email").css({ "border-color": "red", "border-width": "5px" });
+            }
+            else if ($("#email").val().indexOf("@@") < 0 || e.substring(e.indexOf("@@"),e.length).length<3) {
+                $("#message").replaceWith("<label id='message' style='color:red;'>Enter a Valid Email</label>");
+                $("#email").css({ "border-color": "red", "border-width": "5px" });
+            }
+            else
+            {
+                $.getJSON("/Account/EmailAvailability", { email: $("#email").val() }, function (flag) {
+                    if (flag == false) {
+                        $("#message").replaceWith("<label id='message' style='color:green;'>Username Available</label>");
+                        $("#email").css({ "border-color": "green", "border-width": "5px" });
+                    }
+                    else if (flag == true) {
+                        $("#message").replaceWith("<label id='message' style='color:red;'>Username Not Available</label>");
+                        $("#email").css({ "border-color": "red", "border-width": "5px" });
+                    }
+
+                });
+            }
+        });
+
+        $("#submitButton").click(function (event) {
+            var p = $("#password");
+            var cp=$("#confirmPassword");
+            
+            if (p.val() != cp.val())
+            {
+                event.preventDefault();
+                $("#password").css({ "border-color": "red","border-width":"5px" });
+                $("#confirmPassword").css({ "border-color": "red", "border-width": "5px" });
+                
+            }
+        });
+        
+        
+            $("#confirmPassword,#password").keyup(function () {
+                if (($("#password").val().length > 0) && ($("#confirmPassword").val().length > 0))
+                {
+                    var p = $("#password");
+                    var cp = $("#confirmPassword");
+
+                    if (p.val() == cp.val()) {
+                        $("#password").css({ "border-color": "green", "border-width": "3px" });
+                        $("#confirmPassword").css({ "border-color": "green", "border-width": "3px" });
+
+                    }
+                    else {
+                        $("#password").css({ "border-color": "red", "border-width": "1px" });
+                        $("#confirmPassword").css({ "border-color": "red", "border-width": "1px" });
+                    }
+                }
+            });
+        });
+    
+
+</script>
+
+@*<h2>Basic File Upload</h2>  
+@using (Html.BeginForm ("SaveFile", "Home",  FormMethod.Post,  new { enctype = "multipart/form-data" }))  
+{                    
+    <label for="file">Upload Image:</label>  
+    <input type="file" name="file" id="file"/><br><br>  
+    <input type="submit" value="Upload Image"/>  
+    <br><br>  
+    @ViewBag.Message  
+}*@

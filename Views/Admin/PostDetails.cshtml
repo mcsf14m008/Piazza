@@ -1,0 +1,52 @@
+﻿@model List<MyPiazza.Models.Comment>
+
+@{
+    ViewBag.Title = "PostDetails";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@using MyPiazza.Models
+
+@{
+    List<Comment> commentList = Session["commentList"] as List<Comment>;
+    Post currentPost = Session["currentPost"] as Post;
+    
+    }
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6 col-md-10 col-md-offset-1">
+            
+            <h1 class="text-center login-title" style="font-size:50px; font-family:'Times New Roman';">Post Comments</h1>
+            <button class="btn btn-lg btn-default" onclick="location.href='/Admin/ClassDetails/@(((UserClass)Session["currentClass"]).Id)'" ><span class="glyphicon glyphicon-arrow-left"></span>Back to Class</button>
+            <table class="table table-stripped" style="margin-top:50px; border:2px solid #233a5c;">
+                <caption><strong>Comments</strong></caption>    
+                 <thead>
+                       <tr>
+                         <th>Comment By</th>
+                         <th>Email</th>
+                           <th>Comment Date</th>
+                         <th>User Role</th>
+                         <th>Comment Data</th>
+                           <th> </th>
+                       </tr>
+                     </thead>
+                 
+                 <tbody>
+                     @foreach (Comment cmnt in commentList)
+                     {
+                         
+                         <tr>
+                             <td> @cmnt.UserName</td>
+                             <td> @cmnt.User.Email</td>
+                             <td> @cmnt.Date</td>
+                             <td> @cmnt.UserRole</td>
+                             <td> @cmnt.Data</td>
+                             <td> <a href="/Admin/DeleteComment/@cmnt.Id">Delete Comment</a> </td>
+
+                         </tr>
+                     }
+                 </tbody>
+             </table>
+            
+        </div>
+    </div>
+</div>

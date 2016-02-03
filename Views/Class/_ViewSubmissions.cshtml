@@ -1,0 +1,55 @@
+﻿@using MyPiazza.Models
+@model List<MyPiazza.Models.PostSubmission>
+
+<div class="fade in" >
+    <div>
+        <!--ajax button for back to current post-->
+        @using (Ajax.BeginForm("TogglePost", "Class",
+                     new AjaxOptions
+                     {
+                         HttpMethod = "POST",
+                         UpdateTargetId = "post-content",
+                         InsertionMode = InsertionMode.Replace,
+
+                     }))
+        {
+            <button class="btn btn-info" id="button1" name="TogglePost" value="@(((Post)Session["currentPost"]).Id) " type="submit" style="width: 200px;"><span class="glyphicon glyphicon-arrow-left" /> Back to Post</button>
+        }
+    </div>
+
+    <h1 class="block">Submissions</h1>
+    <div id="submissionTable" style="display: none;">
+        <table class="table table-stripped" style="background-color: #b0b0ff; margin-top: 50px;">
+            <thead>
+                <tr>
+                    <th>Submission Name </th>
+                    <th>File Size </th>
+                    <th>Submitted By</th>
+                    <th>Submitted On</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (PostSubmission sub in Model)
+                {
+                    <tr>
+                        <td>@sub.Name </td>
+                        @{double size = Convert.ToDouble(sub.Size) / System.Math.Pow(2.0, 10.0);
+                          
+                            }
+                        <td>@Math.Round(size,2) KB</td>
+                        <td>@sub.UserName </td>
+                        <td>@sub.Date </td>
+                        <td>@Html.ActionLink("Click To Download", "DownloadFile", new { fileName = @sub.FilePath })</td>
+                        <!--td><a href="@sub.FilePath">Click To Download</a></!--td-->
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#submissionTable").slideDown("slow");
+    });
+</script>

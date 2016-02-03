@@ -1,0 +1,52 @@
+﻿@{
+    ViewBag.Title = "ShowSubmissions";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@using MyPiazza.Models
+@model List<PostSubmission>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6 col-md-10 col-md-offset-1">
+            
+            <h1 class="text-center login-title" style="font-size:50px; font-family:'Times New Roman';">Submissions</h1>
+            <button class="btn btn-lg btn-default" onclick="location.href='/Admin'" ><span class="glyphicon glyphicon-arrow-left"></span>Back to Main</button>
+            <table class="table table-stripped" style="background-color: #b0b0ff; margin-top: 50px;">
+            <caption>Submissions</caption>
+            <thead>
+                <tr>
+                    <th>Submission Name </th>
+                    <th>File Size </th>
+                    <th>Submitted By</th>
+                    <th>Email</th>
+                    <th>Submitted On</th>
+                    <th>Submission Class </th>
+                    <th>Class Instructor</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (PostSubmission sub in Model)
+                {
+                    <tr>
+                        <td>@sub.Name </td>
+                        @{double size = Convert.ToDouble(sub.Size) / System.Math.Pow(2.0, 10.0);
+                          
+                            }
+                        <td>@size KB</td>
+                        <td>@sub.UserName </td>
+                        <td>@sub.User.Email </td>
+                        <td>@sub.Date </td>
+                        <td>@sub.Post.UserClass.Name </td>
+                        <td>@sub.Post.UserClass.InstructorName </td>
+                        <td>@Html.ActionLink("Click To Download", "DownloadFile","Class", new { fileName = @sub.FilePath })</td>
+                        <!--td><a href="sub.FilePath">Click To Download</a></!--td-->
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+            
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,156 @@
+﻿@{
+    Layout = "~/Views/Shared/_PartialLogin.cshtml";
+    ViewBag.Title = "Account";
+    
+}
+@using MyPiazza.Models;
+@model List<MyPiazza.Models.UserClass>
+<script>
+    
+</script>
+<!-- Account-->
+<div id="account">
+    <div class="row">
+
+        <div class="col-sm-6 col-md-8 col-md-offset-1">
+
+            <h1 style="animation: alternate; font-family: 'Times New Roman'; font-size: 50px; text-shadow: 1px 1px 1px #ff6a00; color: snow;">Account Information</h1>
+            @{
+                User u   = (User)Session["user"];
+                }
+
+            <!--Personal Information-->
+            <table border="1" class="table table-stripped" style="margin-top: 50px;  border:5px solid #233a5c;">
+                <tbody>
+                    <tr>
+                        <th>First Name</th>
+                        <td>@u.FirstName </td>
+                    </tr>
+                    <tr>
+                        <th >Last Name</th>
+                        <td>@u.LastName </td>
+                    </tr>
+                    <tr>
+                        <th >Email</th>
+                        <td>@u.Email </td>
+                    </tr>
+                    <tr>
+                        <th class="head">Password</th>
+                        <td>
+                            @foreach (char c in u.Password)
+                            {<strong>*</strong>}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><a href="/Account/Manage/@u.Id">Alter Information</a> </th>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <style>
+                th {
+                    border:2px solid #233a5c;
+                }
+            </style>
+            <table class="table table-stripped" style="margin-top: 50px; border: 2px solid #233a5c;">
+                <caption>
+                    <h1 style="animation: alternate; font-family: 'Times New Roman'; font-size: 50px; text-shadow: 1px 1px 1px #ff6a00; color: snow;">Joined Classes</h1>
+                </caption>
+                @if(Model.Count>0)
+                {
+                <thead>
+                    <tr>
+                        <th>Class Name</th>
+                        <th>Instructor Name</th>
+                        <th>No. of Students Enrolled</th>
+                        <th>Status</th>
+                        <th>Enrolled As</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (UserClass cls in Model)
+                    {
+                        <tr>
+                            <td>@cls.Name </td>
+                            <td>@cls.InstructorName </td>
+                            <td>@cls.StudentsEnrolled </td>
+                            <td>@cls.Status </td>
+                            <td>@cls.Role </td>
+                            <td>
+                                <button class="btn" onclick="location.href='/Class/GetClass/@cls.Id'" name="id" value="Goto Class" type="button" style="background: none">Goto Class <span class="glyphicon glyphicon-arrow-right" title="Goto @cls.Name Class"></span></button>
+                            </td>
+                            <td>
+                                @using (Ajax.BeginForm("RespondRequest", "Class",
+                         new AjaxOptions
+                         {
+                             HttpMethod = "POST",
+                             UpdateTargetId = "account",
+                             InsertionMode = InsertionMode.Replace
+                         }))
+                                {
+                                    <input hidden value="@cls.Id" name="classId" />
+                                    <input hidden value="@u.Id" name="id" />
+                                    if (cls.Role == "Student")
+                                    {
+                                    <button class="btn" name="action" value="leave" type="submit" style="background: none">Leave Class <span class="glyphicon glyphicon-remove" title="Leave Class"></span></button>
+                                    }
+                                    else
+                                    {
+                                    <button class="btn" name="action" value="destroy" type="submit" style="background: none">Destroy Class <span class="glyphicon glyphicon-remove" title="Destroy Class"></span></button>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                }
+                else
+                {
+                    <tbody>
+                        <tr><td><h3>No Joined Classes</h3></td></tr>
+                    </tbody>
+                }
+            </table>
+
+            <table class="table table-stripped" style="margin-top: 50px; border: 2px solid #233a5c;">
+                <caption>
+                    <h1 style="animation: alternate; font-family: 'Times New Roman'; font-size: 50px; text-shadow: 1px 1px 1px #ff6a00; color: snow;">Requested Classes</h1>
+                </caption>
+                @if (((List<UserClass>)Session["requestList"]).Count>0 )
+                {
+                <thead>
+                    <tr>
+                        <th>Class Name</th>
+                        <th>Instructor Name</th>
+                        <th>No. of Students Enrolled</th>
+                        <th>Class Status</th>
+                        <th>Request Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (UserClass cls in Session["requestList"] as List<UserClass>)
+                    {
+                        <tr>
+                            <td>@cls.Name </td>
+                            <td>@cls.InstructorName </td>
+                            <td>@cls.StudentsEnrolled </td>
+                            <td>@cls.Status </td>
+                            <td>Pending</td>
+                        </tr>
+                    }
+                </tbody>
+                }
+                else
+                {
+                    <tbody>
+                        <tr><td><h3>No Joined Classes</h3></td></tr>
+                    </tbody>
+                }
+            </table>
+        </div>
+    </div>
+
+</div>
+

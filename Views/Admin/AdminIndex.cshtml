@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "Admin";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6 col-md-4 col-md-offset-4">
+            <!--img class="profile-img img-circle " src="~/Content/Images/logo.png" 
+                    alt="Image Not Found"-->
+            <h1 class="text-center login-title" style="font-size:50px; font-family:'Times New Roman';">Admin</h1>
+            <div  >
+                <ul class="list-group"  >
+                    <li class="list-group-item"><button class="btn btn-info btn-block" onclick="location.href='/Admin/Classes'" style="font-size:20px;" >Show All Classes</button></li>
+                    <li class="list-group-item"><button class="btn btn-info btn-block" onclick="location.href='/Admin/Users'" style="font-size:20px;">Show All Users</button></li>
+                    <li class="list-group-item"><button class="btn btn-info btn-block" onclick="location.href='/Admin/Submissions'" style="font-size:20px;">Show All Submissions</button></li>
+                    <li class="list-group-item"><button class="btn btn-info btn-block" onclick="location.href='/Admin/MailBox'" style="font-size:20px;">Mail Box @if (Session["messages"] != null && (int)Session["messages"] > 0){<span class="badge">@Session["messages"]</span>}</button></li>
+                </ul>
+            </div>
+            
+        </div>
+    </div>
+</div>
+<style>
+    .list-group-item{
+        height:100px;
+    }
+     .btn{
+        height:80px;
+    }
+</style>
